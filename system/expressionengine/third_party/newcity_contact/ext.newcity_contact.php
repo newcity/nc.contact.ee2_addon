@@ -7,7 +7,7 @@ class Newcity_contact_ext
 	var $version         = '1.0';
 	var $description     = 'Settings for the Contact NewCity Accessory';
 	var $settings_exist  = 'y';
-	var $docs_url        = '';
+	var $docs_url        = 'http://github.com/newcity/nc.contact.ee2_addon/blob/master/README.md';
 	var $slug			 = 'Newcity_contact_ext';
 
 
