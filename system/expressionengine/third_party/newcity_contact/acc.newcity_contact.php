@@ -29,7 +29,7 @@ class Newcity_contact_acc {
 		
         $this->sections["Your Contact"]  = $settings['your_contact'];
 		if ($settings['enable_bugs'] == 'yes') {
-			$this->sections["Bugs &amp; Issues"] = '<p>&bull; <a href="http://bugs.newcityexperience.com/default.php?command=new&pg=pgEditBug" target="_blank">File a bug</a><br />&bull; <a href="http://bugs.newcityexperience.com/default.php?command=new&pg=pgEditBug&sComputer='.urlencode($this->current_page_url()).'" target="_blank">File a bug about <strong>this</strong> page</a></li></ul>';
+			$this->sections["Bugs &amp; Issues"] = '<p>&bull; <a href="http://bugs.newcityexperience.com/default.php?command=new&pg=pgEditBug" target="_blank">File a bug</a><br />&bull; <a href="http://bugs.newcityexperience.com/default.php?command=new&pg=pgEditBug&sComputer='.urlencode($this->current_page_url()).'" target="_blank">File a bug about <strong>this</strong> page</a></p>';
 		}
     }
 
