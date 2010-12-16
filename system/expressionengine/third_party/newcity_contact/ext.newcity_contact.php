@@ -1,17 +1,16 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once PATH_THIRD.'newcity_contact/config.php';
+
 class Newcity_contact_ext
 {
-	var $settings        = array();
-	var $name            = 'Contact NewCity Settings';
-	var $version         = '1.0';
-	var $description     = 'Settings for the Contact NewCity Accessory';
-	var $settings_exist  = 'y';
-	var $docs_url        = 'http://github.com/newcity/nc.contact.ee2_addon/blob/master/README.md';
-	var $slug			 = 'Newcity_contact_ext';
+	var $name           = NC_CONTACT_NAME;
+	var $version        = NC_CONTACT_VER;
+	var $description    = NC_CONTACT_DESC;
+	var $settings_exist = 'y';
+	var $docs_url       = NC_CONTACT_DOCS;
 
-
-	function Newcity_contact_ext($settings='')
+	function __construct($settings='')
 	{
 	    $this->settings = $settings;
 	    $this->EE =& get_instance();
@@ -21,7 +20,9 @@ class Newcity_contact_ext
 	{
 		$settings = array();
 		
-		$settings['your_contact'] = array('t', '8', '');
+		$default_contact = "<h3>Project Manager</h3>\n<p>\n\t<a href='mailto:project_manager@insidenewcity.com'>project_manager@insidenewcity.com</a><br />\n\t540-552-1320 extension 2xx\n</p>";
+		
+		$settings['your_contact'] = array('t', '8', $default_contact);
 		$settings['enable_bugs'] = array('r', array('yes' => 'yes', 'no' => 'no'), 'yes');
 		
 		return $settings;
@@ -29,18 +30,17 @@ class Newcity_contact_ext
 		
 	function activate_extension()
 	{
-
-	  $this->EE->db->query($this->EE->db->insert_string('exp_extensions',
-	    	array(
+		$this->EE->db->insert(
+			'extensions',
+			array(
 				'extension_id' => '',
-		        'class'        => ucfirst(get_class($this)),
-		        'method'       => '',
-		        'hook'         => '',
-		        'settings'     => '',
-		        'priority'     => 10,
-		        'version'      => $this->version,
-		        'enabled'      => "y"
-				)
+				'class'        => ucfirst(get_class($this)),
+				'method'       => '',
+				'hook'         => '',
+				'settings'     => '',
+				'priority'     => 10,
+				'version'      => $this->version,
+				'enabled'      => "y"
 			)
 		);
 	}

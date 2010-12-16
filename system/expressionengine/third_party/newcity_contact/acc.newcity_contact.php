@@ -1,4 +1,6 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+require_once PATH_THIRD.'newcity_contact/config.php';
 
 /**
  * The Contact NewCity Accessory
@@ -7,41 +9,41 @@
  * @author Wes Baker
  */
 class Newcity_contact_acc {
-    var $name = 'Contact NewCity';
-    var $id = 'newcity_acc';
-    var $version = '1.0';
-    var $description = 'This is an accessory allowing you to get in touch with NewCity.';
-    var $sections = array();
-	var $extension = 'Newcity_contact_ext';
+	var $name        = NC_CONTACT_NAME;
+	var $version     = NC_CONTACT_VER;
+	var $description = NC_CONTACT_DESC;
+	var $sections    = array();
+	var $id          = 'newcity_acc';
+	
+	var $default_settings = array(
+		"your_contact" => "",
+		"enable_bugs" => "no"
+	);
 
-    /**
-     * Constructor
-     */
-    public function Newcity_contact_acc()
-    {
-        $this->EE =& get_instance();
-    }
-    
-    
-    public function set_sections()
-    {
+	public function __construct()
+	{
+		$this->EE =& get_instance();
+	}
+	
+	public function set_sections()
+	{
 		$settings = $this->get_settings();
 		
-        $this->sections["Your Contact"]  = $settings['your_contact'];
+		$this->sections["Your Contact"]	 = $settings['your_contact'];
 		if ($settings['enable_bugs'] == 'yes') {
 			$this->sections["Bugs &amp; Issues"] = '<p>&bull; <a href="http://bugs.newcityexperience.com/default.php?command=new&pg=pgEditBug" target="_blank">File a bug</a><br />&bull; <a href="http://bugs.newcityexperience.com/default.php?command=new&pg=pgEditBug&sComputer='.urlencode($this->current_page_url()).'" target="_blank">File a bug about <strong>this</strong> page</a></p>';
 		}
-    }
+	}
 
 	private function current_page_url() 
 	{
 		$pageURL = 'http://';
 	 
 		if ($_SERVER["SERVER_PORT"] != "80") {
-	  		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-	 	} else {
-	  		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	 	}
+			$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+		} else {
+			$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+		}
 	
 		// Remove Session Information
 		$pageURL = preg_replace('/(S=.*?&)/', '', $pageURL);
@@ -49,28 +51,20 @@ class Newcity_contact_acc {
 		return $pageURL;
 	}
 	
-	private function get_settings($all_sites = FALSE)
+	private function get_settings()
 	{
-		$get_settings = $this->EE->db->query("SELECT settings 
-			FROM exp_extensions 
-			WHERE class = '".$this->extension."' 
-			LIMIT 1");
-		
 		$this->EE->load->helper('string');
 		
-		if ($get_settings->num_rows() > 0 && $get_settings->row('settings') != '')
-        {
-        	$settings = strip_slashes(unserialize($get_settings->row('settings')));
-        	$settings = ($all_sites == FALSE && isset($settings[$this->EE->config->item('site_id')])) ? 
-        		$settings[$this->EE->config->item('site_id')] : 
-        		$settings;
-        }
-        else
-        {
-        	$settings = array();
-        }
-
-        return $settings;
+		// Pull in the serialized settings and unserialize them
+		$get_settings = unserialize(
+			$this->EE->db
+				->select('settings')
+				->limit(1)
+				->get_where('extensions', array("class" => "Newcity_contact_ext"))
+				->row('settings')
+		);
+		
+		return ($get_settings != '') ? $get_settings : $this->default_settings;
 	}	
 	
 }
